@@ -19,7 +19,7 @@ This project is a shell and Python-based tool designed to retrieve and download 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/kangchiao91/scihub-downloader.git
+   git clone https://github.com/kangchiao91/scihub-cli-downloader.git
    cd scihub-cli-downloader
    ```
 
