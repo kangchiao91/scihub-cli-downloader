@@ -15,12 +15,12 @@ def get_scihub_urls() -> list:
         base_page = session.get("https://www.sci-hub.pub/")
         base_page.raise_for_status()
     except Exception as e:
-        print(f"Error accessing Sci-Hub site list: {e}", file=sys.stderr)
+        sys.stderr.write(f"Error accessing Sci-Hub site list: {e}\n")
         sys.exit(1)
 
     urls = base_page.html.xpath("//div/ul/li/a/@href")
     if not urls:
-        print("No Sci-Hub URLs found. The site structure may have changed.", file=sys.stderr)
+        sys.stderr.write("No Sci-Hub URLs found. The site structure may have changed.\n")
         sys.exit(1)
 
     return urls
@@ -36,41 +36,37 @@ def get_download_link(doi_or_identifier: str, base_url: str) -> str:
 
     try:
         response = session.get(sci_hub_url, headers=headers)
-        response.raise_for_status()
+        response.raise_for_status()  # Check for HTTP errors
     except Exception as e:
-        print(f"Error fetching the page from {sci_hub_url}: {e}", file=sys.stderr)
+        sys.stderr.write(f"Error fetching the page from {sci_hub_url}: {e}\n")
         return None
 
-    # Fallback method to find the download link
+    # Attempt to find the download link from iframe/embed tags or any potential direct links
     embed_url = response.html.xpath("//iframe/@src | //embed/@src", first=True)
     if embed_url:
-        if not embed_url.startswith("https://"):
+        # Ensure the URL has the correct scheme
+        if not embed_url.startswith("http"):
             embed_url = f"https:{embed_url}"
         return embed_url
 
-    print("Failed to find the download link using all methods.", file=sys.stderr)
     return None
 
 def main(url: str):
     """Main function to get the download link from Sci-Hub."""
-    print("Fetching available Sci-Hub URLs...", file=sys.stderr)
     scihub_urls = get_scihub_urls()
-    print(f"Found {len(scihub_urls)} Sci-Hub URLs.", file=sys.stderr)
 
     doi_or_identifier = extract_doi_or_identifier(url)
     for base_url in scihub_urls:
-        print(f"Attempting to use Sci-Hub URL: {base_url}", file=sys.stderr)
         download_url = get_download_link(doi_or_identifier, base_url)
         if download_url:
-            print(download_url)  # Only print the URL to stdout
+            print(download_url)  # Only print the download URL to stdout
             return
 
-    print("Failed to retrieve the download link after trying all available Sci-Hub URLs.", file=sys.stderr)
-    sys.exit(1)
+    sys.exit(1)  # Exit with an error code if no URL is found
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("Usage: python scihub.py <article_url>", file=sys.stderr)
+        sys.stderr.write("Usage: python scihub.py <article_url>\n")
         sys.exit(1)
 
     article_url = sys.argv[1]

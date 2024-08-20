@@ -24,14 +24,20 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 # Call the Python script using its absolute path to get the download URL
 DOWNLOAD_URL=$(python3 "$SCRIPT_DIR/scihub.py" "$ARTICLE_URL")
 
-# Check if DOWNLOAD_URL was retrieved
-if [ -z "$DOWNLOAD_URL" ]; then
-    echo "Failed to retrieve download URL."
+# Print the raw output of the Python script for debugging
+echo "Raw Python script output: $DOWNLOAD_URL"
+
+# Clean the URL by removing any leading/trailing whitespace or invalid characters
+CLEANED_URL=$(echo "$DOWNLOAD_URL" | head -n 1 | xargs)
+
+# Print the cleaned URL for debugging
+echo "Cleaned URL: $CLEANED_URL"
+
+# Check if CLEANED_URL is valid
+if [[ -z "$CLEANED_URL" || "$CLEANED_URL" != http* ]]; then
+    echo "Failed to retrieve a valid download URL."
     exit 1
 fi
-
-# Remove the fragment identifier (if any) from the URL
-CLEANED_URL=$(echo "$DOWNLOAD_URL" | sed 's/#.*//')
 
 # Extract the filename from the cleaned URL
 FILENAME=$(basename "$CLEANED_URL")
