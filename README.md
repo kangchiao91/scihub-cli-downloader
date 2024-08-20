@@ -7,6 +7,7 @@ This project is a shell and Python-based tool designed to retrieve and download 
 - **Dynamic URL Retrieval**: Automatically fetches the most up-to-date Sci-Hub URLs.
 - **Robust Download Process**: Handles various methods of extracting the download link, ensuring high reliability.
 - **Customizable**: Users can specify download directories and configure the maximum number of attempts.
+- **Automatic File Renaming**: Optionally rename the downloaded file based on the paper's title.
 
 ## Requirements
 
@@ -57,16 +58,17 @@ Run the `scihubdown` script with the necessary parameters:
 ```bash
 scihubdown -u "https://doi.org/10.3847/1538-4365/acbc77"
 ```
-or 
+The https prefix and quotation marks are not required for the -u option; simply providing the article's DOI is sufficient:
 
 ```bash
-scihubdown -u "10.3847/1538-4365/acbc77"
+scihubdown -u 10.3847/1538-4365/acbc77
 ```
 
 **Optional flags:**
 
 - `-d <download_directory>`: Specify the directory where the PDF will be saved (default is `~/Downloads`).
 - `-m <max_attempts>`: Set the maximum number of attempts to try different Sci-Hub URLs (default is 6).
+- `-r`: Rename the downloaded file based on the paper's title (the title will be cleaned and "Sci-Hub" will be excluded).
 
 ### Contributing
 
@@ -79,3 +81,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Acknowledgments
 
 This project was inspired by and built upon [Tony Wu’s Alfred Sci-Hub Workflow](https://github.com/TonyWu20/alfred-download-url-from-scihub-workflow/tree/main).
+
