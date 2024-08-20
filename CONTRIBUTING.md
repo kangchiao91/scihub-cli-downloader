@@ -9,7 +9,7 @@ Thank you for considering contributing to this project! We welcome contributions
 2. **Clone Your Fork**: Clone your forked repository to your local machine.
 
    ```bash
-   git clone https://github.com/yourusername/scihub-downloader.git
+   git clone https://github.com/kangchiao91/scihub-downloader.git
    cd scihub-cli-downloader
    ```
 
