@@ -34,19 +34,33 @@ This project is a shell and Python-based tool designed to retrieve and download 
    ```bash
    chmod +x scihub.py
    chmod +x download_from_scihub.sh
+   chmod +x setup_scihubdown.sh
    ```
+
+4. **Run the setup script to add the downloader to your PATH and create an alias:**
+
+   ```bash
+   ./setup_scihubdown.sh
+   ```
+
+   The setup script will:
+   - Check the location of `download_from_scihub.sh`.
+   - Add its directory to your system's `PATH` if not already present.
+   - Create an alias `scihubdown` for easy access to the downloader.
+
+   After running the setup script, you can use the alias `scihubdown` to run the downloader from any directory.
 
 ### Usage
 
-Run the `download_from_scihub.sh` script with the necessary parameters:
+Run the `scihubdown` script with the necessary parameters:
 
 ```bash
-./download_from_scihub.sh -u "https://doi.org/10.3847/1538-4365/acbc77"
+scihubdown -u "https://doi.org/10.3847/1538-4365/acbc77"
 ```
 or 
 
 ```bash
-./download_from_scihub.sh -u "10.3847/1538-4365/acbc77"
+scihubdown -u "10.3847/1538-4365/acbc77"
 ```
 
 **Optional flags:**
