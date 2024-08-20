@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# Step 1: Find the absolute path of the script
+# Step 1: Find the absolute path of the scripts
 SCRIPT_NAME="download_from_scihub.sh"
+
 SCRIPT_PATH=$(realpath "$SCRIPT_NAME")
 
 # Check if the script exists in the current directory
 if [ ! -f "$SCRIPT_PATH" ]; then
-    echo "Error: $SCRIPT_NAME not found in the current directory."
+    echo "Error: Required script not found in the current directory."
     exit 1
 fi
 
@@ -25,9 +26,9 @@ else
     echo "$SCRIPT_DIR is already in your PATH."
 fi
 
-# Step 4: Create an alias for easy access
+# Step 4: Create an alias for easy access, using the absolute path for the shell script
 ALIAS_NAME="scihubdown"
-ALIAS_COMMAND="alias $ALIAS_NAME='$SCRIPT_NAME'"
+ALIAS_COMMAND="alias $ALIAS_NAME='$SCRIPT_PATH'"
 
 # Check if the alias already exists
 if ! grep -q "$ALIAS_COMMAND" ~/.bashrc; then
@@ -39,4 +40,4 @@ else
     echo "Alias '$ALIAS_NAME' already exists."
 fi
 
-echo "Setup complete! You can now use the command '$ALIAS_NAME' to run the script."
+echo "Setup complete! You can now use the command '$ALIAS_NAME' to run the script from anywhere."

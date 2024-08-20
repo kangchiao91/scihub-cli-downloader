@@ -18,8 +18,11 @@ if [ -z "$ARTICLE_URL" ]; then
     exit 1
 fi
 
-# Call the Python script to get the download URL and capture only the first line
-DOWNLOAD_URL=$(python3 scihub.py "$ARTICLE_URL" | head -n 1)
+# Determine the absolute path of this script's directory
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+# Call the Python script using its absolute path to get the download URL
+DOWNLOAD_URL=$(python3 "$SCRIPT_DIR/scihub.py" "$ARTICLE_URL")
 
 # Check if DOWNLOAD_URL was retrieved
 if [ -z "$DOWNLOAD_URL" ]; then
@@ -29,9 +32,6 @@ fi
 
 # Remove the fragment identifier (if any) from the URL
 CLEANED_URL=$(echo "$DOWNLOAD_URL" | sed 's/#.*//')
-
-# Debugging: Print the cleaned URL
-echo "Cleaned URL: $CLEANED_URL"
 
 # Extract the filename from the cleaned URL
 FILENAME=$(basename "$CLEANED_URL")
