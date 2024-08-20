@@ -24,14 +24,8 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 # Call the Python script using its absolute path to get the download URL
 DOWNLOAD_URL=$(python3 "$SCRIPT_DIR/scihub.py" "$ARTICLE_URL")
 
-# Print the raw output of the Python script for debugging
-echo "Raw Python script output: $DOWNLOAD_URL"
-
 # Clean the URL by removing any leading/trailing whitespace or invalid characters
 CLEANED_URL=$(echo "$DOWNLOAD_URL" | head -n 1 | xargs)
-
-# Print the cleaned URL for debugging
-echo "Cleaned URL: $CLEANED_URL"
 
 # Check if CLEANED_URL is valid
 if [[ -z "$CLEANED_URL" || "$CLEANED_URL" != http* ]]; then
@@ -39,8 +33,12 @@ if [[ -z "$CLEANED_URL" || "$CLEANED_URL" != http* ]]; then
     exit 1
 fi
 
-# Extract the filename from the cleaned URL
-FILENAME=$(basename "$CLEANED_URL")
+# Extract the filename from the cleaned URL, removing the fragment part (if any)
+FILENAME=$(basename "$CLEANED_URL" | sed 's/#.*//')
+
+# Debugging: Print the cleaned URL and filename
+echo "Cleaned URL: $CLEANED_URL"
+echo "Filename: $FILENAME"
 
 # Download the file using wget, with --no-check-certificate in case of certificate issues
 wget --no-check-certificate -O "$DOWNLOAD_DIR/$FILENAME" "$CLEANED_URL"
