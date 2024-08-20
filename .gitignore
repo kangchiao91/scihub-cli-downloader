@@ -27,3 +27,6 @@ wheels/
 .idea/
 .vscode/
 *.sublime-workspace
+
+# OS or Editor temporary files
+.DS_Store
