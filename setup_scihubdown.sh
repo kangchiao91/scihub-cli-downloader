@@ -1,43 +1,35 @@
 #!/bin/bash
 
-# Step 1: Find the absolute path of the scripts
-SCRIPT_NAME="download_from_scihub.sh"
-
-SCRIPT_PATH=$(realpath "$SCRIPT_NAME")
-
-# Check if the script exists in the current directory
-if [ ! -f "$SCRIPT_PATH" ]; then
-    echo "Error: Required script not found in the current directory."
+# Determine the shell configuration file to update
+if [ -n "$ZSH_VERSION" ]; then
+    SH_CONFIG_FILE="$HOME/.zshrc"
+elif [ -n "$BASH_VERSION" ]; then
+    SH_CONFIG_FILE="$HOME/.bashrc"
+else
+    echo "Unsupported shell. Only bash and zsh are supported."
     exit 1
 fi
 
-echo "Script found at: $SCRIPT_PATH"
+# Define unique script directory and alias names
+SCIHUB_SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCIHUB_ALIAS_NAME="scihubdown"
+SCIHUB_ALIAS_COMMAND="alias $SCIHUB_ALIAS_NAME='$SCIHUB_SCRIPT_DIR/download_from_scihub.sh'"
 
-# Step 2: Extract the directory from the script's path
-SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
-
-# Step 3: Add the script's directory to the PATH if not already present
-if [[ ":$PATH:" != *":$SCRIPT_DIR:"* ]]; then
-    echo "Adding $SCRIPT_DIR to PATH..."
-    echo "export PATH=\"$PATH:$SCRIPT_DIR\"" >> ~/.bashrc
-    source ~/.bashrc
-    echo "$SCRIPT_DIR has been added to your PATH."
+# Add the script's directory to PATH if not already present
+if ! grep -q "export PATH=.*$SCIHUB_SCRIPT_DIR" "$SH_CONFIG_FILE"; then
+    echo "Adding $SCIHUB_SCRIPT_DIR to PATH in $SH_CONFIG_FILE..."
+    echo "export PATH=\"\$PATH:$SCIHUB_SCRIPT_DIR\"" >> "$SH_CONFIG_FILE"
 else
-    echo "$SCRIPT_DIR is already in your PATH."
+    echo "$SCIHUB_SCRIPT_DIR is already in PATH in $SH_CONFIG_FILE."
 fi
 
-# Step 4: Create an alias for easy access, using the absolute path for the shell script
-ALIAS_NAME="scihubdown"
-ALIAS_COMMAND="alias $ALIAS_NAME='$SCRIPT_PATH'"
-
-# Check if the alias already exists
-if ! grep -q "$ALIAS_COMMAND" ~/.bashrc; then
-    echo "Creating alias '$ALIAS_NAME'..."
-    echo "$ALIAS_COMMAND" >> ~/.bashrc
-    source ~/.bashrc
-    echo "Alias '$ALIAS_NAME' has been created."
+# Add the alias for scihubdown if not already present
+if ! grep -q "$SCIHUB_ALIAS_COMMAND" "$SH_CONFIG_FILE"; then
+    echo "Adding alias '$SCIHUB_ALIAS_NAME' in $SH_CONFIG_FILE..."
+    echo "$SCIHUB_ALIAS_COMMAND" >> "$SH_CONFIG_FILE"
 else
-    echo "Alias '$ALIAS_NAME' already exists."
+    echo "Alias '$SCIHUB_ALIAS_NAME' is already configured in $SH_CONFIG_FILE."
 fi
 
-echo "Setup complete! You can now use the command '$ALIAS_NAME' to run the script from anywhere."
+# Inform the user to reload their shell configuration
+echo "Setup complete! Please run 'source $SH_CONFIG_FILE' or restart your terminal to apply the changes."
